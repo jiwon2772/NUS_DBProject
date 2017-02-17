@@ -1,4 +1,6 @@
-<!DOCTYPE html>
+<%@ page language="java" contentType="text/html; charset=EUC-KR"
+	pageEncoding="EUC-KR"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <title>NUS_Web</title>
@@ -19,20 +21,88 @@ th, td {
 <script src="go-debug.js"></script>
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<style type="text/css">
+/* CSS for the traditional context menu */
+#contextMenu {
+	z-index: 300;
+	position: absolute;
+	left: 5px;
+	border: 1px solid #444;
+	background-color: #F5F5F5;
+	display: none;
+	box-shadow: 0 0 10px rgba(0, 0, 0, .4);
+	font-size: 12px;
+	font-family: sans-serif;
+	font-weight: bold;
+}
 
+#contextMenu ul {
+	list-style: none;
+	top: 0;
+	left: 0;
+	margin: 0;
+	padding: 0;
+}
+
+#contextMenu li a {
+	position: relative;
+	min-width: 60px;
+	color: #444;
+	display: inline-block;
+	padding: 6px;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+#contextMenu li:hover {
+	background: #CEDFF2;
+	color: #EEE;
+}
+
+#contextMenu li ul li {
+	display: none;
+}
+
+#contextMenu li ul li a {
+	position: relative;
+	min-width: 60px;
+	padding: 6px;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+#contextMenu li:hover ul li {
+	display: block;
+	margin-left: 0px;
+	margin-top: 0px;
+}
+</style>
 </head>
+
 <body onload="init()">
 
 	<div id="sample">
+
 		<div style="width: 100%; white-space: nowrap;">
+
 			<span
-				style="display: inline-block; vertical-align: top; padding: 5px; width: 280px">
-				<div id="myPaletteDiv"
-					style="border: solid 1px black; height: 620px"></div>
-			</span> <span
-				style="display: inline-block; vertical-align: top; padding: 5px; width: 64%">
+				style="display: inline-block; vertical-align: top; padding: 5px; width: 82.5%">
 				<div id="myDiagramDiv"
 					style="border: solid 1px black; height: 620px"></div>
+				<div id="contextMenu">
+					<ul>
+						<li id="isTemp" class="hasSubMenu"><a href="#" target="_self">Type</a>
+							<ul class="subMenu" id="colorSubMenu">
+								<li style="background: crimson;"
+									onclick="cxcommand(event, 'isTemp')" name="true"><a
+									href="#" target="_self" name="true">Temporal</a></li>
+								<li style="background: chartreuse;"
+									onclick="cxcommand(event, 'isTemp')" name="fasle"><a
+									href="#" target="_self" name="false">None</a></li>
+
+							</ul></li>
+					</ul>
+				</div>
 			</span> <span
 				style="display: inline-block; vertical-align: top; padding: 7px; width: 250px">
 				<div style="height: 620px; vertical-align: top">
@@ -40,61 +110,57 @@ th, td {
 						<tr>
 							<td><Input type="submit" class="btn btn-warning"
 								name="Create" id="CreateButton" value="Create"
-								onclick="window.location.reload()"
+								onclick="location.href='main.jsp'" disabled="disabled"
 								style="font-size: 50px; width: 230px; height: 90px"></td>
 						</tr>
 						<tr>
 							<td><Input type="submit" class="btn btn-warning" name="Load"
 								id="LoadButton" value="Load" onclick="openChild()"
+								disabled="disabled"
 								style="font-size: 50px; width: 230px; height: 90px"></td>
 						</tr>
 						<tr>
 							<a id="down" href="" download="">
-							<td><Input type="submit" class="btn btn-warning" name="Save"
-								id="SavedButton" value="Save" onclick="save()"
-								disabled="disabled"
-								style="font-size: 50px; width: 230px; height: 90px"></td>
+								<td><Input type="submit" class="btn btn-warning"
+									name="Save" id="SavedButton" value="Save" onclick="save()"
+									disabled="disabled"
+									style="font-size: 50px; width: 230px; height: 90px"></td>
 							</a>
 						</tr>
 						<tr>
+							<form ACTION="http://localhost:8080/DBProject2/ERCreater"
+								method="POST">
+								<input type="hidden" id="ERJson" name="ERJson" value="" /> <input
+									type="submit" id="submit" style="display: none;" />
+							</form>
 							<td><Input type="submit" class="btn btn-warning"
-								name="Validate" id="ValidateButton"
-								value="Validate" disabled="disabled"
+								name="Validate" id="ValidateButton" value="Validate"
+								disabled="disabled" onclick="validClick()"
+								style="font-size: 50px; width: 230px; height: 90px"></td>
+							</form>
+						</tr>
+						<tr>
+							<td><Input type="submit" class="btn btn-warning"
+								name="Annotate" id="AnnotateButton" value="Back"
+								onclick="window.history.back();"
 								style="font-size: 50px; width: 230px; height: 90px"></td>
 						</tr>
 						<tr>
 							<td><Input type="submit" class="btn btn-warning"
-								name="Annotate" id="AnnotateButton"
-								value="Annotate" disabled="disabled"
+								name="Translate" id="TranslateButton" value="Translate"
 								style="font-size: 50px; width: 230px; height: 90px"></td>
 						</tr>
 						<tr>
 							<td><Input type="submit" class="btn btn-warning"
-								name="Translate" id="TranslateButton"
-								value="Translate" disabled="disabled"
-								style="font-size: 50px; width: 230px; height: 90px"></td>
-						</tr>
-						<tr>
-							<td><Input type="submit" class="btn btn-warning"
-								name="Query" id="QueryButton" value="Query"
-								disabled="disabled"
+								name="Query" id="QueryButton" value="Query" disabled="disabled"
 								style="font-size: 50px; width: 230px; height: 90px"></td>
 						</tr>
 					</table>
 				</div>
-
 			</span>
 		</div>
 		<Span
-			style="display: inline-block; vertical-align: top; padding: 5px; width: 83%">
-			<div>
-
-				<div
-					style="overflow: scroll; border: solid 1px black; height: 100px">
-					<span> </span>
-				</div>
-
-			</div>
+			style="display: inline-block; vertical-align: top; padding: 5px; width: 80%">
 		</Span>
 
 		<div id="invisible">
@@ -103,37 +169,27 @@ th, td {
 				Diagram Model saved in JSON format:
 			</div>
 
-			<textarea id="mySavedModel" style="width: 100%; height: 300px">{ "class": "go.GraphLinksModel","linkFromPortIdProperty": "fromPort","linkToPortIdProperty": "toPort","nodeDataArray": [],"linkDataArray": []}
+			<textarea id="mySavedModel" style="width: 100%; height: 300px">
+  			<% 
+  				request.setCharacterEncoding("euc-kr");
+  				String a = request.getParameter("diagram");
+  				System.out.println(a);
+  			%>
+  			<%= a %>
     </textarea>
 		</div>
-		<Span
-			style="display: inline-block; vertical-align: top; padding: 5px;">
-			<FORM ACTION="http://localhost:8080/DBProject/ERCreater">
-				<textarea id="mySavedModel2" style="width: 100%; height: 300px"
-					name="ERJson">{ "class": "go.GraphLinksModel","linkFromPortIdProperty": "fromPort","linkToPortIdProperty": "toPort","nodeDataArray": [],"linkDataArray": []}</textarea>
-			</FORM>
 	</div>
 	</Span>
 </body>
 <script>
-	$(document).ready(function(){
-	//jQuery methods go here ...
-    $("#invisible").hide();
-	$("#mySavedModel2").hide();
+	$(document).ready(function() {
+		// jQuery methods go here ...
+		$("#invisible").hide();
+		$("#mySavedModel2").hide();
 	});
 
-	var openWin;
-	var defaultJson = '{ "class": "go.GraphLinksModel","linkFromPortIdProperty": "fromPort","linkToPortIdProperty": "toPort","nodeDataArray": [],"linkDataArray": []}';
 	function init() {
 
-		var str = document.getElementById("mySavedModel2").innerHTML;
-		console.log(defaultJson);
-		console.log(str);
-		if (str == defaultJson) {
-			document.getElementById("SavedButton").disabled = true;
-		} else {
-			document.getElementById("SavedButton").disabled = false;
-		}
 		//if (window.goSamples) goSamples();  // init for these samples -- you don't need to call this
 		var $ = go.GraphObject.make; // for conciseness in defining templates
 		myDiagram = $(go.Diagram, "myDiagramDiv", // must name or refer to the DIV HTML element
@@ -153,12 +209,12 @@ th, td {
 				strokeWidth : 0.5,
 				interval : 10
 			})),
-			allowDrop : true, // must be true to accept drops from the Palette
-			"draggingTool.dragsLink" : true,
-			"draggingTool.isGridSnapEnabled" : true,
+			allowDrop : false, // must be true to accept drops from the Palette
+			"draggingTool.dragsLink" : false,
+			"draggingTool.isGridSnapEnabled" : false,
 			"linkingTool.isUnconnectedLinkValid" : false,
 			"linkingTool.portGravity" : 20,
-			"relinkingTool.isUnconnectedLinkValid" : true,
+			"relinkingTool.isUnconnectedLinkValid" : false,
 			"relinkingTool.portGravity" : 20,
 			"relinkingTool.fromHandleArchetype" : $(go.Shape, "Diamond", {
 				segmentIndex : 0,
@@ -182,41 +238,26 @@ th, td {
 			rotatingTool : $(TopRotatingTool), // defined below
 			"rotatingTool.snapAngleMultiple" : 15,
 			"rotatingTool.snapAngleEpsilon" : 15,
-			"undoManager.isEnabled" : true
+			"undoManager.isEnabled" : false
 
 		});
 
+		myDiagram.allowDelete = false;
+
 		// when the document is modified, add a "*" to the title and enable the "Save" button
-		myDiagram
-				.addDiagramListener(
-						"Modified",
-						function(e) {
-							var button = document.getElementById("SaveButton");
-							if (button)
-								button.disabled = !myDiagram.isModified;
-							var idx = document.title.indexOf("*");
-							if (myDiagram.isModified) {
-								if (idx < 0) {
-									document.title += "*";
-									document.title = document.title.substr(0,
-											idx);
-									saveDiagramProperties(); // do this first, before writing to JSON
-									document.getElementById("mySavedModel2").innerHTML = myDiagram.model
-											.toJson();
-									var str = document
-											.getElementById("mySavedModel2").innerHTML;
-									if (str === defaultJson) {
-										document.getElementById("SavedButton").disabled = true;
-										document.getElementById("ValidateButton").disabled = true;
-									} else {
-										document.getElementById("SavedButton").disabled = false;
-										document.getElementById("ValidateButton").disabled = false;
-									}
-								} else if (idx >= 0)
-									document.title = document.title.substr(0,
-											idx);
-							}
-						});
+		myDiagram.addDiagramListener("Modified", function(e) {
+			var button = document.getElementById("SaveButton");
+			if (button)
+				button.disabled = !myDiagram.isModified;
+			var idx = document.title.indexOf("*");
+			if (myDiagram.isModified) {
+				if (idx < 0)
+					document.title += "*";
+			} else {
+				if (idx >= 0)
+					document.title = document.title.substr(0, idx);
+			}
+		});
 
 		// Define a function for creating a "port" that is normally transparent.
 		// The "name" is used as the GraphObject.portId, the "spot" is used to control how links connect
@@ -322,16 +363,18 @@ th, td {
 
 		myDiagram.nodeTemplate = $(go.Node, "Spot", {
 			locationSpot : go.Spot.Center
+		}, {
+			contextMenu : $(go.Adornment)
 		}, new go.Binding("location", "loc", go.Point.parse)
 				.makeTwoWay(go.Point.stringify), {
 			selectable : true,
 			selectionAdornmentTemplate : nodeSelectionAdornmentTemplate
 		}, {
-			resizable : true,
+			resizable : false,
 			resizeObjectName : "PANEL",
 			resizeAdornmentTemplate : nodeResizeAdornmentTemplate
 		}, {
-			rotatable : true,
+			rotatable : false,
 			rotateAdornmentTemplate : nodeRotateAdornmentTemplate
 		}, new go.Binding("angle").makeTwoWay(),
 		// the main object is a Panel that surrounds a TextBlock with a Shape
@@ -351,7 +394,7 @@ th, td {
 			margin : 8,
 			maxSize : new go.Size(160, NaN),
 			wrap : go.TextBlock.WrapFit,
-			editable : true
+			editable : false
 		}, new go.Binding("text").makeTwoWay())),
 		// four small named ports, one on each side:
 		makePort("T", go.Spot.Top, true, true), makePort("L", go.Spot.Left,
@@ -377,7 +420,8 @@ th, td {
 					fill : null,
 					stroke : "deepskyblue",
 					strokeWidth : 0
-				}) // use selection object's strokeWidth
+				})
+		// use selection object's strokeWidth
 		);
 
 		myDiagram.linkTemplate = $(go.Link, // the whole link panel
@@ -385,9 +429,9 @@ th, td {
 			selectable : true,
 			selectionAdornmentTemplate : linkSelectionAdornmentTemplate
 		}, {
-			relinkableFrom : true,
-			relinkableTo : true,
-			reshapable : true
+			relinkableFrom : false,
+			relinkableTo : false,
+			reshapable : false
 		}, {
 			routing : go.Link.AvoidsNodes,
 			curve : go.Link.JumpOver,
@@ -406,9 +450,9 @@ th, td {
 			stroke : "blue",
 			margin : 8,
 			segmentOffset : new go.Point(NaN, NaN),
-			editable : true
+			editable : false
 		// enable in-place editing
-		}, new go.Binding("text", "multi").makeTwoWay()), $(go.Panel, "Auto",
+		}, new go.Binding("text", "multi")), $(go.Panel, "Auto",
 				new go.Binding("visible", "isSelected").ofObject(), $(go.Shape,
 						"RoundedRectangle", // the link shape
 						{
@@ -419,97 +463,81 @@ th, td {
 					editable : false
 				}, new go.Binding("text").makeTwoWay())));
 
+		////////////////////////////////////////////////////////////////////////////////
+		///////////////////////////////////Top////////////////////////////////////
+		// This is a dummy context menu for the whole Diagram:
+		myDiagram.contextMenu = $(go.Adornment);
+
+		// Override the ContextMenuTool.showContextMenu and hideContextMenu methods
+		// in order to modify the HTML appropriately.
+		var cxTool = myDiagram.toolManager.contextMenuTool;
+
+		// This is the actual HTML context menu:
+		var cxElement = document.getElementById("contextMenu");
+
+		// We don't want the div acting as a context menu to have a (browser) context menu!
+		cxElement.addEventListener("contextmenu", function(e) {
+			this.focus();
+			e.preventDefault();
+			return false;
+		}, false);
+		cxElement.addEventListener("blur", function(e) {
+			cxTool.stopTool();
+
+			// maybe start another context menu
+			if (cxTool.canStart()) {
+				myDiagram.currentTool = cxTool;
+				cxTool.doMouseUp();
+			}
+
+		}, false);
+		cxElement.tabIndex = "1";
+
+		// This is the override of ContextMenuTool.showContextMenu:
+		// This does not not need to call the base method.
+		cxTool.showContextMenu = function(contextmenu, obj) {
+			var diagram = this.diagram;
+			if (diagram === null)
+				return;
+
+			// Hide any other existing context menu
+			if (contextmenu !== this.currentContextMenu) {
+				this.hideContextMenu();
+			}
+
+			// Show only the relevant buttons given the current state.
+			var cmd = diagram.commandHandler;
+			var objExists = obj !== null;
+			document.getElementById("isTemp").style.display = objExists ? "block"
+					: "none";
+
+			// Now show the whole context menu element
+			cxElement.style.display = "block";
+			// we don't bother overriding positionContextMenu, we just do it here:
+			var mousePt = diagram.lastInput.viewPoint;
+			cxElement.style.left = mousePt.x + "px";
+			cxElement.style.top = mousePt.y + "px";
+
+			// Remember that there is now a context menu showing
+			this.currentContextMenu = contextmenu;
+		}
+
+		// This is the corresponding override of ContextMenuTool.hideContextMenu:
+		// This does not not need to call the base method.
+		cxTool.hideContextMenu = function() {
+			if (this.currentContextMenu === null)
+				return;
+			cxElement.style.display = "none";
+			this.currentContextMenu = null;
+		}
+		//////////////////////////////////////Down///////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////////////////////////
+
 		load(); // load an initial diagram from some JSON text
 
 		// initialize the Palette that is on the left side of the page
-		myPalette = $(go.Palette, "myPaletteDiv", // must name or refer to the DIV HTML element
-		{
-			maxSelectionCount : 1,
-			nodeTemplateMap : myDiagram.nodeTemplateMap, // share the templates used by myDiagram
-			linkTemplate : // simplify the link template, just in this Palette
-			$(go.Link, { // because the GridLayout.alignment is Location and the nodes have locationSpot == Spot.Center,
-				// to line up the Link in the same manner we have to pretend the Link has the same location spot
-				locationSpot : go.Spot.Center,
-				selectionAdornmentTemplate : $(go.Adornment, "Link", {
-					locationSpot : go.Spot.Center
-				}, $(go.Shape, {
-					isPanelMain : true,
-					fill : null,
-					stroke : "deepskyblue",
-					strokeWidth : 0
-				}), $(go.Shape, // the arrowhead
-				{
-					toArrow : "",
-					stroke : null
-				}))
-			}, {
-				routing : go.Link.AvoidsNodes,
-				curve : go.Link.JumpOver,
-				corner : 5,
-				toShortLength : 4
-			}, new go.Binding("points"), $(go.Shape, // the link path shape
-			{
-				isPanelMain : true,
-				strokeWidth : 2
-			}), $(go.Shape, // the "from" arrowhead
-			new go.Binding("fromArrow", "fromArrow")), $(go.Shape, // the "to" arrowhead
-			new go.Binding("toArrow", "toArrow"))),
-			model : new go.GraphLinksModel([ // specify the contents of the Palette
-			{
-				text : "Entity",
-				figure : "RoundedRectangle",
-				fill : "lightyellow",
-				size : "150 70",
-				type : "E",
-				isTemp : "false"
-			}, {
-				text : "Relationship",
-				figure : "Diamond",
-				fill : "lightskyblue",
-				type : "R",
-				isTemp : "false"
-			}, {
-				text : "Attribute",
-				figure : "Ellipse",
-				fill : "#00AD5F",
-				type : "A",
-				isTemp : "false"
-			} ], [
-					// the Palette also has a disconnected Link, which the user can drag-and-drop
-					{
-						points : new go.List(go.Point).addAll([
-								new go.Point(0, 0), new go.Point(30, 0),
-								new go.Point(30, 40), new go.Point(60, 40) ]),
-						toArrow : "",
-						fromArrow : "",
-						type : "r",
-						multi : "m"
-					},
-					{
-						points : new go.List(go.Point).addAll([
-								new go.Point(0, 0), new go.Point(30, 0),
-								new go.Point(30, 40), new go.Point(60, 40) ]),
-						toArrow : "Standard",
-						fromArrow : "",
-						type : "a"
-					},
-					{
-						points : new go.List(go.Point).addAll([
-								new go.Point(0, 0), new go.Point(30, 0),
-								new go.Point(30, 40), new go.Point(60, 40) ]),
-						toArrow : "DoubleFeathers",
-						fromArrow : "",
-						type : "m"
-					},
-					{
-						points : new go.List(go.Point).addAll([
-								new go.Point(0, 0), new go.Point(30, 0),
-								new go.Point(30, 40), new go.Point(60, 40) ]),
-						toArrow : "Standard",
-						fromArrow : "Backward",
-						type : "k"
-					} ])
-		});
+		
+
 	}
 
 	function TopRotatingTool() {
@@ -531,23 +559,73 @@ th, td {
 	};
 	// end of TopRotatingTool class
 
+	/////////////////////////////////////////////////
+	////////////////////////////////////////////////
+	// This is the general menu command handler, parameterized by the name of the command.
+	function cxcommand(event, val) {
+		if (val === undefined)
+			val = event.currentTarget.id;
+		var diagram = myDiagram;
+		switch (val) {
+		case "isTemp": {
+			//var istemp = window.getComputedStyle(document.elementFromPoint(event.clientX, event.clientY).parentElement)["background-color"];
+			var istemp = document
+					.elementFromPoint(event.clientX, event.clientY).name;
+			//var istemp = document.getElementById("test_id").getAttribute('name');
+
+			changeType(diagram, istemp);
+			break;
+		}
+		}
+		diagram.currentTool.stopTool();
+	}
+
+	function changeType(diagram, istemp) {
+		// Always make changes in a transaction, except when initializing the diagram.
+		diagram.startTransaction("change");
+		diagram.selection.each(function(node) {
+			if (node instanceof go.Node) { // ignore any selected Links and simple Parts
+				// Examine and modify the data, not the Node directly.
+				var data = node.data;
+				var sub = data.text;
+				var sub2 = sub.substring(0, sub.length - 2);
+
+				// Call setDataProperty to support undo/redo as well as
+				// automatically evaluating any relevant bindings.
+				if (istemp == "true") {
+					if (data.isTemp == "false")
+						diagram.model.setDataProperty(data, "text", data.text
+								+ "_T");
+				} else {
+					if (data.isTemp == "true")
+						diagram.model.setDataProperty(data, "text", sub2);
+
+				}
+				diagram.model.setDataProperty(data, "isTemp", istemp);
+			}
+		});
+		diagram.commitTransaction("change");
+	}
+
+	function save() {
+		saveDiagramProperties(); // do this first, before writing to JSON
+		document.getElementById("mySavedModel").value = myDiagram.model
+				.toJson();
+		myDiagram.isModified = false;
+	}
+	function saveDiagramProperties() {
+		myDiagram.model.modelData.position = go.Point
+				.stringify(myDiagram.position);
+	}
+	//////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////
+
 	// Show the diagram's model in JSON format that the user may edit
 	function save() {
 		saveDiagramProperties(); // do this first, before writing to JSON
 		document.getElementById("mySavedModel2").value = myDiagram.model
 				.toJson();
 		myDiagram.isModified = false;
-		var json = document.getElementById("mySavedModel2").value;
-		//var data = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(json));
-		var data = "text/json;charset=utf-8," + json;
-		console.log(json);
-		
-		var today = new Date();
-		var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-		
-		document.getElementById("down").href = 'data:' + data;
-		document.getElementById("down").download = date + '.json';
-		document.getElementById("down").click();
 	}
 	function load() {
 		myDiagram.model = go.Model.fromJson(document
@@ -564,21 +642,6 @@ th, td {
 		var pos = myDiagram.model.modelData.position;
 		if (pos)
 			myDiagram.initialPosition = go.Point.parse(pos);
-	}
-	function openWin() {
-		window
-				.open(
-						"http://localhost:8080/DBProject2/load.html",
-						"_blank",
-						"toolbar=yes, location=yes, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=no, copyhistory=yes, width=400, height=530");
-	}
-	function openChild() {
-		window.name = "parentForm";
-		openWin = window
-				.open(
-						"http://localhost:8080/DBProject2/load.html",
-						"childForm",
-						"toolbar=no, location=yes, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=yes, width=400, height=530");
 	}
 </script>
 </html>

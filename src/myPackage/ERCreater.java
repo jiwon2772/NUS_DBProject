@@ -40,14 +40,15 @@ public class ERCreater extends HttpServlet {
 		String ctrl="true";
 		RequestDispatcher dispatcher=null;
         out.println(request.getParameter("ERJson"));
-        String jsonString = request.getParameter("ERJson").toString();
-        String target = "temporal.jsp";
+        String jsonString = request.getParameter("ERJson");
+        String target = "main.jsp";
   
        String valid = new ValidER(jsonString).makeErrorMsg();
        
        if(valid.trim().equals(""))
        {
     	   request.setAttribute("diagram", jsonString);
+    	   request.setAttribute("isValid", true);
     	   dispatcher = request.getRequestDispatcher(target);
     	   dispatcher.forward(request, response);
        }
@@ -55,7 +56,8 @@ public class ERCreater extends HttpServlet {
        {
     	   request.setAttribute("error", valid);
     	   request.setAttribute("diagram", jsonString);
-    	   dispatcher = request.getRequestDispatcher("main.jsp");
+    	   request.setAttribute("isValid", false);
+    	   dispatcher = request.getRequestDispatcher(target);
     	   dispatcher.forward(request, response);
        }
     	   
@@ -66,7 +68,7 @@ public class ERCreater extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		 
+		doGet(request,response);
 	}
 
 }
