@@ -28,28 +28,30 @@ public class ER_Maker {
 		// JSONArray
 
 		for (int i = 0; i < linkArr.size(); i++) {
-			//System.out.println(((JSONObject) (linkArr.get(i))).toString());
-			//System.out.println((nodeArr.get(i).toString()));
+			// System.out.println(((JSONObject) (linkArr.get(i))).toString());
+			// System.out.println((nodeArr.get(i).toString()));
 		}
 
 		// first, make instance for entity node and relationship node
 		for (int i = 0; i < nodeArr.size(); i++) {
 
 			String name = ((JSONObject) nodeArr.get(i)).get("text").toString();
+			if (name.contains("&#7488;"))
+				name.substring(0, name.length() - 8);
 			if (((JSONObject) nodeArr.get(i)).get("type").toString().compareTo("E") == 0) {
-				Entity temp = new Entity(name.substring(0,name.length()-2));
+				Entity temp = new Entity(name);
 				temp.setKey(Integer.parseInt(((JSONObject) nodeArr.get(i)).get("key").toString()));
 				if (((JSONObject) nodeArr.get(i)).get("isTemp").toString().compareTo("true") == 0)
 					temp.setIsTemporal(true);
 				ER.add(temp);
 			} else if (((JSONObject) nodeArr.get(i)).get("type").toString().compareTo("R") == 0) {
-				Relationship temp = new Relationship(name.substring(0,name.length()-2));
+				Relationship temp = new Relationship(name);
 				temp.setKey(Integer.parseInt(((JSONObject) nodeArr.get(i)).get("key").toString()));
 				if (((JSONObject) nodeArr.get(i)).get("isTemp").toString().compareTo("true") == 0)
 					temp.setIsTemporal(true);
 				ER.add(temp);
 			} else if (((JSONObject) nodeArr.get(i)).get("type").toString().compareTo("A") == 0) {
-				Attribute temp = new Attribute(name.substring(0,name.length()-2));
+				Attribute temp = new Attribute(name);
 				temp.setKey(Integer.parseInt(((JSONObject) nodeArr.get(i)).get("key").toString()));
 				if (((JSONObject) nodeArr.get(i)).get("isTemp").toString().compareTo("true") == 0)
 					temp.setIsTemporal(true);
@@ -68,7 +70,7 @@ public class ER_Maker {
 				if ((ER.get(j)).getKey() == Integer.parseInt(((JSONObject) linkArr.get(i)).get("to").toString()))
 					to = ER.get(j);
 			}
-			for (int j=0; j < attArr.size(); j++) {
+			for (int j = 0; j < attArr.size(); j++) {
 				if ((attArr.get(j)).getKey() == Integer.parseInt(((JSONObject) linkArr.get(i)).get("from").toString()))
 					from = attArr.get(j);
 				if ((attArr.get(j)).getKey() == Integer.parseInt(((JSONObject) linkArr.get(i)).get("to").toString()))
@@ -77,34 +79,35 @@ public class ER_Maker {
 			// We knew that which node is from and which node is to
 			if (from != null && to != null) {
 				// 'from' save 'to'
-				if (from.getClass().getName().compareTo("myPackage.Relationship") == 0) { // relationship type
+				if (from.getClass().getName().compareTo("myPackage.Relationship") == 0) { // relationship
+																							// type
 					((Relationship) from).addList(to);
-					if ( (((JSONObject) linkArr.get(i)).get("type").toString()).compareTo("m") == 0) { //the attribute is multi-valued
-						((Attribute)to).setIsMulti(true);
+					if ((((JSONObject) linkArr.get(i)).get("type").toString()).compareTo("m") == 0) { // the
+																										// attribute
+																										// is
+																										// multi-valued
+						((Attribute) to).setIsMulti(true);
 					}
-				}
-				else if(from.getClass().getName().compareTo("myPackage.Entity") == 0) {
+				} else if (from.getClass().getName().compareTo("myPackage.Entity") == 0) {
 					((Entity) from).addList(to);
-					//add attribute
-					if ( (((JSONObject) linkArr.get(i)).get("type").toString()).compareTo("m") == 0) { //the attribute is multi-valued
-						((Attribute)to).setIsMulti(true);
+					// add attribute
+					if (((JSONObject) linkArr.get(i)).get("attriType") != null) {
+						if ((((JSONObject) linkArr.get(i)).get("attriType").toString()).compareTo("m") == 0) {
+							((Attribute) to).setIsMulti(true);
+						} else if ((((JSONObject) linkArr.get(i)).get("attriType").toString()).compareTo("k") == 0) {
+							((Attribute) to).setIsKey(true);
+						}
 					}
-					else if( (((JSONObject) linkArr.get(i)).get("type").toString()).compareTo("k") == 0 ) {
-						((Attribute)to).setIsKey(true);
-					}
-				}
-				else {
-					//error
+				} else {
+					// error
 				}
 				// 'to' save 'from'
 				if (to.getClass().getName().compareTo("myPackage.Relationship") == 0) {
 					((Relationship) to).addList(from);
-				}
-				else if(to.getClass().getName().compareTo("myPackage.Entity") == 0) {
+				} else if (to.getClass().getName().compareTo("myPackage.Entity") == 0) {
 					((Entity) to).addList(from);
-				}
-				else {
-					//error
+				} else {
+					// error
 				}
 			}
 		}

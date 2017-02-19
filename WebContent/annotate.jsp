@@ -1,5 +1,3 @@
-<%@ page language="java" contentType="text/html; charset=EUC-KR"
-	pageEncoding="EUC-KR"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -128,8 +126,7 @@ th, td {
 							</a>
 						</tr>
 						<tr>
-							<form ACTION="http://localhost:8080/DBProject2/ERCreater"
-								method="POST">
+							<form ACTION="http://localhost:8080/DBProject2/ERCreater" method="POST">
 								<input type="hidden" id="ERJson" name="ERJson" value="" /> <input
 									type="submit" id="submit" style="display: none;" />
 							</form>
@@ -137,7 +134,6 @@ th, td {
 								name="Validate" id="ValidateButton" value="Validate"
 								disabled="disabled" onclick="validClick()"
 								style="font-size: 50px; width: 230px; height: 90px"></td>
-							</form>
 						</tr>
 						<tr>
 							<td><Input type="submit" class="btn btn-warning"
@@ -146,8 +142,13 @@ th, td {
 								style="font-size: 50px; width: 230px; height: 90px"></td>
 						</tr>
 						<tr>
+							<form ACTION="http://localhost:8080/DBProject2/Translate" method="POST">
+								<input type="hidden" id="ERJson3" name="ERJson3" value="" /> 
+								<input type="submit" id="submit_tran" style="display: none;" />
+							</form>
 							<td><Input type="submit" class="btn btn-warning"
 								name="Translate" id="TranslateButton" value="Translate"
+								onclick="translateClick()"
 								style="font-size: 50px; width: 230px; height: 90px"></td>
 						</tr>
 						<tr>
@@ -177,6 +178,8 @@ th, td {
   			%>
   			<%= a %>
     </textarea>
+    		<textarea id="mySavedModel2" style="width: 100%; height: 300px"
+				name="ERJson">{ "class": "go.GraphLinksModel","linkFromPortIdProperty": "fromPort","linkToPortIdProperty": "toPort","nodeDataArray": [],"linkDataArray": []}</textarea>
 		</div>
 	</div>
 	</Span>
@@ -609,9 +612,19 @@ th, td {
 
 	function save() {
 		saveDiagramProperties(); // do this first, before writing to JSON
-		document.getElementById("mySavedModel").value = myDiagram.model
+		document.getElementById("mySavedModel2").value = myDiagram.model
 				.toJson();
 		myDiagram.isModified = false;
+		var json = document.getElementById("mySavedModel2").value;
+		//var data = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(json));
+		var data = "text/json;charset=utf-8," + json;
+		
+		var today = new Date();
+		var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+		
+		document.getElementById("down").href = 'data:' + data;
+		document.getElementById("down").download = date + '.json';
+		document.getElementById("down").click();
 	}
 	function saveDiagramProperties() {
 		myDiagram.model.modelData.position = go.Point
@@ -619,14 +632,6 @@ th, td {
 	}
 	//////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////////
-
-	// Show the diagram's model in JSON format that the user may edit
-	function save() {
-		saveDiagramProperties(); // do this first, before writing to JSON
-		document.getElementById("mySavedModel2").value = myDiagram.model
-				.toJson();
-		myDiagram.isModified = false;
-	}
 	function load() {
 		myDiagram.model = go.Model.fromJson(document
 				.getElementById("mySavedModel").value);
@@ -642,6 +647,12 @@ th, td {
 		var pos = myDiagram.model.modelData.position;
 		if (pos)
 			myDiagram.initialPosition = go.Point.parse(pos);
+	}
+	function translateClick() {
+		saveDiagramProperties();
+		document.getElementById("mySavedModel2").value = myDiagram.model.toJson();
+		document.getElementById("ERJson3").value = document.getElementById("mySavedModel2").value;
+		document.getElementById("submit_tran").click();
 	}
 </script>
 </html>

@@ -72,11 +72,7 @@ th, td {
 
 				<div id="contextMenu3">
 					<ul>
-
 					</ul>
-
-
-
 				</div>
 				<div id="default"></div>
 
@@ -104,22 +100,22 @@ th, td {
 							</a>
 						</tr>
 						<tr>
-							<form ACTION="http://localhost:8080/DBProject2/ERCreater"
-								method="POST">
-								<input type="hidden" id="ERJson" name="ERJson" value="" /> <input
-									type="submit" id="submit" style="display: none;" />
+							<form ACTION="http://localhost:8080/DBProject2/ERCreater" 
+							method="POST">
+								<input type="hidden" id="ERJson" name="ERJson" value="" /> 
+								<input type="submit" id="submit" style="display: none;" />
 							</form>
 							<td><Input type="submit" class="btn btn-warning"
 								name="Validate" id="ValidateButton" value="Validate"
 								disabled="disabled" onclick="validClick()"
 								style="font-size: 50px; width: 230px; height: 90px"></td>
-							</form>
 						</tr>
 						<tr>
 							<form ACTION="http://localhost:8080/DBProject2/annotate.jsp"
 								method="POST">
-								<input type="hidden" id="ERJson2" name="diagram" value="" /> <input
-									type="submit" id="submit_anno" style="display: none;" />
+								<input type="hidden" id="ERJson2" name="diagram" value="" /> 
+								<input type="submit" id="submit_anno" style="display: none;" />
+							</form>
 							<td><Input type="submit" class="btn btn-warning"
 								name="Annotate" id="AnnotateButton" value="Annotate"
 								disabled="disabled" onClick="annotateClick()"
@@ -267,6 +263,22 @@ th, td {
 						} else {
 							document.getElementById("AnnotateButton").disabled = true;
 						}
+					}
+					
+					//check It is empty or not
+					var count = 0;
+					myDiagram.nodes.each(function(node){
+						count++;
+					});
+					myDiagram.links.each(function(link){
+						count++;
+					});
+					if (count == 0) {
+						document.getElementById("SavedButton").disabled = true;
+						document.getElementById("ValidateButton").disabled = true;
+					} else {
+						document.getElementById("SavedButton").disabled = false;
+						document.getElementById("ValidateButton").disabled = false;
 					}
 					updateStates();
 				}
@@ -826,22 +838,6 @@ th, td {
 
                         }
                      });
-                     if(tmp.type == "A" && tmp2.type == "A"){
-                        myDiagram.model.setDataProperty(link.data, "toArrow", "");
-                        myDiagram.model.setDataProperty(link.data, "fromArrow", "");
-                        myDiagram.model.setDataProperty(link.data, "to", null);
-                        myDiagram.model.setDataProperty(link.data, "from", null);
-                        
-                        myDiagram.model.setDataProperty(link.data, "type", "n");
-                        myDiagram.model.setDataProperty(link.data, "attriType", null);
-                        myDiagram.model.setDataProperty(link.data, "nToN", "0");
-                        myDiagram.model.setDataProperty(link.data, "multi", null);
-                        console.log(myDiagram.model.toJson());
-                        
-                        console.log(myDiagram.model.toJson());
-                           
-                     }
-
                   }
                   
                    if((isE == 1 && isR == 1) || isR ==2)     //Entity to Relationship

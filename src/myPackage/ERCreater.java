@@ -31,7 +31,7 @@ public class ERCreater extends HttpServlet {
     public boolean isValid(String jsonString)
     {
     	Boolean isValid=false;
-    	System.out.println(jsonString);
+    	//System.out.println(jsonString);
 		return isValid;
     }
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

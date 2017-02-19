@@ -1,34 +1,25 @@
 package myPackage;
 
+public class Attribute extends Node {
 
-
-public class Attribute extends Node{
-
-
-
-	private Boolean isKey=false;
-
-	private Boolean isMulti=false;
-
-	
+	private Boolean isKey = false;
+	private Boolean isMulti = false;
+	private int typeOfMulti = 0;
 
 	public Attribute(String name, boolean isKey, boolean isMulti) {
 
 		// TODO Auto-generated constructor stub
 
-		this.name=name;
-
-		this.isTemporal=false;
-
-		this.isKey=isKey;
-
-		this.isMulti=isMulti;
+		this.name = name;
+		this.isTemporal = false;
+		this.isKey = isKey;
+		this.isMulti = isMulti;
 
 	}
 
 	public Attribute(String name) {
 
-		this.name=name;
+		this.name = name;
 
 	}
 
@@ -56,10 +47,12 @@ public class Attribute extends Node{
 
 	}
 
-	
+	public int getTypeOfMulti() {
+		return typeOfMulti;
+	}
 
-	
-
-	
+	public void setTypeOfMulti(int typeOfMulti) {
+		this.typeOfMulti = typeOfMulti;
+	}
 
 }
