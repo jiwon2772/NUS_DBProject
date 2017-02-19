@@ -86,6 +86,7 @@ public class ValidER {
 		String linkTo = "";
 		String linkType = "";
 		String linkMulti = "";
+		String attrType = "";
 
 		String to = "";
 		String toType = "";
@@ -109,6 +110,8 @@ public class ValidER {
 				for (int l = 0; l < linkArr.size(); l++) {
 					linkNode = (JSONObject) linkArr.get(l);
 					linkType = linkNode.get("type").toString().trim();
+					if(linkNode.get("attriType")!=null)
+						attrType = linkNode.get("attriType").toString().trim();
 
 					if (linkNode.get("to") == null) {
 						validCondition=false;
@@ -136,7 +139,7 @@ public class ValidER {
 							{
 								cnt++;
 								if (fromType.equalsIgnoreCase("e") && toType.equalsIgnoreCase("a")) {
-									if (linkType.equals("k"))
+									if (attrType.equals("k"))
 										hasKey = true;// key 값이 있는 지 없는 지 확인
 									else if (linkType.equals("r"))// 
 										errorMsg += "Not proper link " + fromNode.get("text").toString() + " - "+ toNode.get("text") + "<br>";

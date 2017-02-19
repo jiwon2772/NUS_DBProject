@@ -1,10 +1,13 @@
 <!DOCTYPE html>
-<%@ page import="java.util.*" %>
+<%@ page import="java.util.*"%>
 <html>
 <head>
 <title>NUS_Web</title>
 <link rel="stylesheet"
 	href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel='stylesheet' href='contextmenu.css' />
+<link rel='stylesheet' href='contextmenu2.css' />
+<link rel='stylesheet' href='contextmenu3.css' />
 <style>
 th, td {
 	padding: 5px;
@@ -34,6 +37,49 @@ th, td {
 				style="display: inline-block; vertical-align: top; padding: 5px; width: 64%">
 				<div id="myDiagramDiv"
 					style="border: solid 1px black; height: 620px"></div>
+				<div id="contextMenu">
+					<ul>
+						<li id="NtoN" style="background: chartreuse;"
+							onclick="cxcommand(event)" name="one"><a href="#"
+							target="_self" name="one">one</a></li>
+						<li id="NtoN" style="background: chartreuse;"
+							onclick="cxcommand(event)" name="many"><a href="#"
+							target="_self" name="many">many</a></li>
+
+					</ul>
+
+
+
+				</div>
+				<div id="contextMenu2">
+					<ul>
+						<li id="linkType" onclick="cxcommand(event)" name="1to1"><a
+							href="#" target="_self" name="1to1">1 to 1</a></li>
+						<li id="linkType" onclick="cxcommand(event)" name="1toM"><a
+							href="#" target="_self" name="1toM">1 to M</a></li>
+						<li id="linkType" onclick="cxcommand(event)" name="Mto1"><a
+							href="#" target="_self" name="Mto1">M to 1</a></li>
+						<li id="linkType" onclick="cxcommand(event)" name="MtoM"><a
+							href="#" target="_self" name="MtoM">M to M</a></li>
+						<li id="linkType" onclick="cxcommand(event)" name="key"><a
+							href="#" target="_self" name="key">key</a></li>
+						<li id="linkType" onclick="cxcommand(event)" name="normal"><a
+							href="#" target="_self" name="normal">normal</a></li>
+						<li id="linkType" onclick="cxcommand(event)" name="multi"><a
+							href="#" target="_self" name="multi">multi value</a></li>
+					</ul>
+				</div>
+
+				<div id="contextMenu3">
+					<ul>
+
+					</ul>
+
+
+
+				</div>
+				<div id="default"></div>
+
 			</span> <span
 				style="display: inline-block; vertical-align: top; padding: 7px; width: 250px">
 				<div style="height: 620px; vertical-align: top">
@@ -51,42 +97,43 @@ th, td {
 						</tr>
 						<tr>
 							<a id="down" href="" download="">
-							<td><Input type="submit" class="btn btn-warning" name="Save"
-								id="SavedButton" value="Save" onclick="save()"
-								disabled="disabled"
-								style="font-size: 50px; width: 230px; height: 90px"></td>
+								<td><Input type="submit" class="btn btn-warning"
+									name="Save" id="SavedButton" value="Save" onclick="save()"
+									disabled="disabled"
+									style="font-size: 50px; width: 230px; height: 90px"></td>
 							</a>
 						</tr>
 						<tr>
-							<form ACTION="http://localhost:8080/DBProject2/ERCreater" method="POST">
-							<input type="hidden" id="ERJson" name="ERJson" value="" />
-							<input type="submit" id="submit" style="display:none;"/>
-							</form>  
+							<form ACTION="http://localhost:8080/DBProject2/ERCreater"
+								method="POST">
+								<input type="hidden" id="ERJson" name="ERJson" value="" /> <input
+									type="submit" id="submit" style="display: none;" />
+							</form>
 							<td><Input type="submit" class="btn btn-warning"
-								name="Validate" id="ValidateButton"
-								value="Validate" disabled="disabled" onclick="validClick()"
+								name="Validate" id="ValidateButton" value="Validate"
+								disabled="disabled" onclick="validClick()"
 								style="font-size: 50px; width: 230px; height: 90px"></td>
 							</form>
 						</tr>
 						<tr>
-							<form ACTION="http://localhost:8080/DBProject2/annotate.jsp" method="POST">
-							<input type="hidden" id="ERJson2" name="diagram" value="" />
-							<input type="submit" id="submit_anno" style="display:none;"/>
+							<form ACTION="http://localhost:8080/DBProject2/annotate.jsp"
+								method="POST">
+								<input type="hidden" id="ERJson2" name="diagram" value="" /> <input
+									type="submit" id="submit_anno" style="display: none;" />
 							<td><Input type="submit" class="btn btn-warning"
-								name="Annotate" id="AnnotateButton"
-								value="Annotate" disabled="disabled" onClick="annotateClick()"
+								name="Annotate" id="AnnotateButton" value="Annotate"
+								disabled="disabled" onClick="annotateClick()"
 								style="font-size: 50px; width: 230px; height: 90px"></td>
 						</tr>
 						<tr>
 							<td><Input type="submit" class="btn btn-warning"
-								name="Translate" id="TranslateButton"
-								value="Translate" disabled="disabled"
-								style="font-size: 50px; width: 230px; height: 90px"></td>
-						</tr>
-						<tr>
-							<td><Input type="submit" class="btn btn-warning"
-								name="Query" id="QueryButton" value="Query"
+								name="Translate" id="TranslateButton" value="Translate"
 								disabled="disabled"
+								style="font-size: 50px; width: 230px; height: 90px"></td>
+						</tr>
+						<tr>
+							<td><Input type="submit" class="btn btn-warning"
+								name="Query" id="QueryButton" value="Query" disabled="disabled"
 								style="font-size: 50px; width: 230px; height: 90px"></td>
 						</tr>
 					</table>
@@ -100,7 +147,7 @@ th, td {
 
 				<div
 					style="overflow: scroll; border: solid 1px black; height: 100px">
-					<span style="color:red; font-size:20px">${error}</span>
+					<span style="color: red; font-size: 20px">${error}</span>
 				</div>
 
 			</div>
@@ -117,12 +164,12 @@ th, td {
 				if(diagram != null) { %>
 					${diagram}
 			<%  } else { %>{ "class": "go.GraphLinksModel","linkFromPortIdProperty": "fromPort","linkToPortIdProperty": "toPort","nodeDataArray": [],"linkDataArray": []}<% } %>
-    </textarea>
+    		</textarea>
 		</div>
 		<Span
 			style="display: inline-block; vertical-align: top; padding: 5px;">
-				<textarea id="mySavedModel2" style="width: 100%; height: 300px"
-					name="ERJson">{ "class": "go.GraphLinksModel","linkFromPortIdProperty": "fromPort","linkToPortIdProperty": "toPort","nodeDataArray": [],"linkDataArray": []}</textarea>
+			<textarea id="mySavedModel2" style="width: 100%; height: 300px"
+				name="ERJson">{ "class": "go.GraphLinksModel","linkFromPortIdProperty": "fromPort","linkToPortIdProperty": "toPort","nodeDataArray": [],"linkDataArray": []}</textarea>
 	</div>
 	</Span>
 </body>
@@ -181,6 +228,11 @@ th, td {
 			"linkingTool.isUnconnectedLinkValid" : false,
 			"linkingTool.portGravity" : 20,
 			"relinkingTool.isUnconnectedLinkValid" : true,
+			"commandHandler.archetypeGroupData" : {
+		            text : "Group",
+		            isGroup : true,
+		            color : "blue"
+		         },
 			"relinkingTool.portGravity" : 20,
 			"relinkingTool.fromHandleArchetype" : $(go.Shape, "Diamond", {
 				segmentIndex : 0,
@@ -216,6 +268,7 @@ th, td {
 							document.getElementById("AnnotateButton").disabled = true;
 						}
 					}
+					updateStates();
 				}
 			}
 
@@ -428,6 +481,8 @@ th, td {
 			curve : go.Link.JumpOver,
 			corner : 5,
 			toShortLength : 4
+		}, {
+			contextMenu:$(go.Adornment)
 		}, new go.Binding("points").makeTwoWay(), $(go.Shape, // the link path shape
 		{
 			isPanelMain : true,
@@ -452,9 +507,140 @@ th, td {
 						}), $(go.TextBlock, {
 					minSize : new go.Size(NaN, NaN),
 					editable : false
-				}, new go.Binding("text").makeTwoWay())));
+				}, new go.Binding("text").makeTwoWay())),
+				$(go.TextBlock, // the "from"label
+						{
+							textAlign:"center",
+							font:"bold 14px sans-serif",
+							stroke: "#1967B3",
+							segmentIndex: 0,
+	                        segmentOffset: new go.Point(NaN, NaN),
+	                       // segmentOrientation: go.Link.OrientUpright
+	                      },
+	                      new go.Binding("text", "text")),
+	                    $(go.TextBlock,  // the "to" label
+	                      {
+	                        textAlign: "center",
+	                        font: "bold 14px sans-serif",
+	                        stroke: "#1967B3",
+	                        segmentIndex: -1,
+	                        segmentOffset: new go.Point(NaN, NaN),
+	                       // segmentOrientation: go.Link.OrientUpright
+	                      },
+	                      new go.Binding("text", "toText"))
+		);
 
-		load(); // load an initial diagram from some JSON text
+	//start about contextMenu
+		 // This is a dummy context menu for the whole Diagram:
+      myDiagram.contextMenu = $(go.Adornment);
+
+      // Override the ContextMenuTool.showContextMenu and hideContextMenu methods
+      // in order to modify the HTML appropriately.
+      var cxTool = myDiagram.toolManager.contextMenuTool;
+
+      // This is the actual HTML context menu:
+      var cxElement;
+      var context = "contextMenu3";
+
+      cxElement = document.getElementById(context);
+      //cxElement = document.getElementById("contextMenu2");
+      // We don't want the div acting as a context menu to have a (browser) context menu!
+      cxElement.addEventListener("contextmenu", function(e) {
+         this.focus();
+         e.preventDefault();
+         return false;
+      }, false);
+
+      cxElement.addEventListener("blur", function(e) {
+         cxTool.stopTool();
+
+         // maybe start another context menu
+         if (cxTool.canStart()) {
+            myDiagram.currentTool = cxTool;
+            cxTool.doMouseUp();
+         }
+
+      }, false);
+      cxElement.tabIndex = "1";
+
+      // This is the override of ContextMenuTool.showContextMenu:
+      // This does not not need to call the base method.
+      cxTool.showContextMenu = function(contextmenu, obj) {
+         var diagram = this.diagram;
+         if (diagram === null)
+            return;
+         console.log(this.currentContextMenu);
+         if (contextmenu !== this.currentContextMenu) {
+            this.hideContextMenu();
+         }
+         var isE = 0;
+         var isR = 0;
+         var isA = 0;
+         var context2 = "";
+         myDiagram.selection.each(function(link) {
+            if (link instanceof go.Link) { // ignore any selected Links and simple Parts
+               // Examine and modify the data, not the Node directly.
+               var data = link.data;
+               var dt = data.to;
+               var df = data.from;
+               var type = data.type;
+               console.log(type);
+               if(type=="r"){    //Relationship to Relationship or Entity to Relationship
+                  cxElement = document.getElementById("contextMenu");
+                  }
+               else if(type =="a"){      //Attribute menu
+                  cxElement = document.getElementById("contextMenu2");
+                  }
+               else{    //nothing 
+                  cxElement = document.getElementById("contextMenu3");
+               }
+               //console.log("type: " + data.type);
+                 
+
+            }
+   
+         });
+
+         // cxElement = document.getElementById(context2);
+         // We don't want the div acting as a context menu to have a (browser) context menu!
+         cxElement.addEventListener("contextmenu", function(e) {
+            this.focus();
+            e.preventDefault();
+            return false;
+         }, false);
+
+         // Hide any other existing context menu
+         //if (contextmenu !== this.currentContextMenu) {
+         //   this.hideContextMenu();
+         //}
+
+         // Show only the relevant buttons given the current state.
+         var cmd = diagram.commandHandler;
+         var objExists = obj !== null;
+
+         document.getElementById("linkType").style.display = objExists ? "block": "none";
+
+         // Now show the whole context menu element
+         cxElement.style.display = "block";
+         // we don't bother overriding positionContextMenu, we just do it here:
+         var mousePt = diagram.lastInput.viewPoint;
+         cxElement.style.left = mousePt.x + 250 + "px";
+         cxElement.style.top = mousePt.y + "px";
+
+         // Remember that there is now a context menu showing
+         this.currentContextMenu = contextmenu;
+      }
+
+      // This is the corresponding override of ContextMenuTool.hideContextMenu:
+      // This does not not need to call the base method.
+      cxTool.hideContextMenu = function() {
+         if (this.currentContextMenu === null)
+            return;
+         cxElement.style.display = "none";
+         this.currentContextMenu = null;
+      }
+	//end about contextMenu
+		
 
 		// initialize the Palette that is on the left side of the page
 		myPalette = $(go.Palette, "myPaletteDiv", // must name or refer to the DIV HTML element
@@ -491,6 +677,14 @@ th, td {
 			new go.Binding("toArrow", "toArrow"))),
 			model : new go.GraphLinksModel([ // specify the contents of the Palette
 			{
+			    text : "",
+			    figure : "Rectangle",
+			    fill : "white",
+			    stroke : "transparent",
+			    size : "250 70",
+			    type : "E",
+			    isTemp : "false"
+			},{
 				text : "Entity",
 				figure : "RoundedRectangle",
 				fill : "lightyellow",
@@ -517,34 +711,15 @@ th, td {
 								new go.Point(30, 40), new go.Point(60, 40) ]),
 						toArrow : "",
 						fromArrow : "",
-						type : "r",
-						multi : "m"
-					},
-					{
-						points : new go.List(go.Point).addAll([
-								new go.Point(0, 0), new go.Point(30, 0),
-								new go.Point(30, 40), new go.Point(60, 40) ]),
-						toArrow : "Standard",
-						fromArrow : "",
-						type : "a"
-					},
-					{
-						points : new go.List(go.Point).addAll([
-								new go.Point(0, 0), new go.Point(30, 0),
-								new go.Point(30, 40), new go.Point(60, 40) ]),
-						toArrow : "DoubleFeathers",
-						fromArrow : "",
-						type : "m"
-					},
-					{
-						points : new go.List(go.Point).addAll([
-								new go.Point(0, 0), new go.Point(30, 0),
-								new go.Point(30, 40), new go.Point(60, 40) ]),
-						toArrow : "Standard",
-						fromArrow : "Backward",
-						type : "k"
+						
+						attriType: "",   //default ""
+		                type : "n",   // default "none"
+		                multi : "",   //default ""
+		                nToN : "0"    //default "0 (1 to 1)
 					} ])
 		});
+	
+		load(); // load an initial diagram from some JSON text
 	}
 
 	function TopRotatingTool() {
@@ -565,6 +740,268 @@ th, td {
 		go.RotatingTool.prototype.rotate.call(this, newangle + 90);
 	};
 	// end of TopRotatingTool class
+	
+	// update the value and appearance of each node according to its type and input values
+   function updateStates() {
+
+      var oldskip = myDiagram.skipsUndoManager;
+      myDiagram.skipsUndoManager = true;
+      console.log("function for links");
+      // do all "input" nodes first
+      var isE = 0;
+      var isR = 0;
+      var isA = 0;
+      myDiagram.links.each(function(link) {
+
+               //console.log(node.data.to);
+               var dt = link.data.to;
+               var df = link.data.from;
+               var tmp = myDiagram.model.findNodeDataForKey(dt);
+               var tmp2 = myDiagram.model.findNodeDataForKey(df);
+               //var type = node.data.to;
+               //console.log(dt);
+               //myDiagram.startTransaction("change");
+               if (link.data.type != "n") //노말이 아닌데, 연결이 안되어있으면 
+               {
+                  if (dt == null || df == null) {
+
+                     //console.log("kkk");
+                     myDiagram.model.setDataProperty(link.data, "toArrow", "");
+                     myDiagram.model.setDataProperty(link.data, "fromArrow", "");
+                     myDiagram.model.setDataProperty(link.data, "to", null);
+                     myDiagram.model.setDataProperty(link.data, "from", null);
+                     
+                     myDiagram.model.setDataProperty(link.data, "type", "n");
+                     myDiagram.model.setDataProperty(link.data, "attriType", null);
+                     myDiagram.model.setDataProperty(link.data, "nToN", "0");
+                     myDiagram.model.setDataProperty(link.data, "multi", null);
+                      
+                     //myDiagram.model.setDataProperty(link.data, "nToN", "0");
+                     myDiagram.model.setDataProperty(link.data, "text", null);
+                     myDiagram.model.setDataProperty(link.data, "toText", null);
+                     console.log("Type: " + link.data.type + " ,AttriType: " + link.data.attriType);  
+                  }
+               } 
+               else //노멀인데, 연결이 되어있으면 
+               {
+                  if (dt != null && df != null) {
+                     myDiagram.nodes.each(function(node) {
+
+                        if (dt == node.data.key) {
+                           if (node.data.type == "A") {   // attribute랑 연결이 되어있는 경우 
+                              myDiagram.model.setDataProperty(link.data, "toArrow", "Standard");
+                              myDiagram.model.setDataProperty(link.data, "fromArrow", "");
+                              
+                              myDiagram.model.setDataProperty(link.data, "type", "a");   //attribute랑 연결된 경우
+                              myDiagram.model.setDataProperty(link.data, "attriType", "n");
+                              myDiagram.model.setDataProperty(link.data, "nToN", "0");
+                              myDiagram.model.setDataProperty(link.data, "multi", null);
+                              
+                              //var tmp = myDiagram.model.findNodeDataForKey(link.data.to);
+                              //console.log("key: " + tmp.key + " " + ", To: " + link.data.to + ", attriType: " + tmp.type);
+                           
+                           }
+                           else if(node.data.type=="R")
+                                      isR++;
+                                   else
+                                      isE++;
+
+                        }
+                        if (df == node.data.key) {
+                           if (node.data.type == "A") {  // attribute랑 연결이 되어있는 경우 
+                              myDiagram.model.setDataProperty(link.data, "toArrow", "");
+                              myDiagram.model.setDataProperty(link.data, "fromArrow", "Backward");
+                           
+                              myDiagram.model.setDataProperty(link.data, "type", "a");   //attribute랑 연결된 경우
+                              myDiagram.model.setDataProperty(link.data, "attriType", "n");
+                              myDiagram.model.setDataProperty(link.data, "nToN", "0");
+                              myDiagram.model.setDataProperty(link.data, "multi", null);
+                              
+                           
+                           }
+                           else if(node.data.type=="R")
+                                      isR++;
+                                   else
+                                      isE++;
+
+                        }
+                     });
+                     if(tmp.type == "A" && tmp2.type == "A"){
+                        myDiagram.model.setDataProperty(link.data, "toArrow", "");
+                        myDiagram.model.setDataProperty(link.data, "fromArrow", "");
+                        myDiagram.model.setDataProperty(link.data, "to", null);
+                        myDiagram.model.setDataProperty(link.data, "from", null);
+                        
+                        myDiagram.model.setDataProperty(link.data, "type", "n");
+                        myDiagram.model.setDataProperty(link.data, "attriType", null);
+                        myDiagram.model.setDataProperty(link.data, "nToN", "0");
+                        myDiagram.model.setDataProperty(link.data, "multi", null);
+                        console.log(myDiagram.model.toJson());
+                        
+                        console.log(myDiagram.model.toJson());
+                           
+                     }
+
+                  }
+                  
+                   if((isE == 1 && isR == 1) || isR ==2)     //Entity to Relationship
+                     {   
+                        myDiagram.model.setDataProperty(link.data, "type", "r");   //attribute랑 연결된 경우
+                        myDiagram.model.setDataProperty(link.data, "attriType", null);
+                        myDiagram.model.setDataProperty(link.data, "nToN", null);
+                        myDiagram.model.setDataProperty(link.data, "multi", "1");   
+                     }
+               }
+               isE = 0;
+               isR = 0;
+               isA = 0;
+               
+               
+            });
+
+      myDiagram.skipsUndoManager = oldskip;
+      //myDiagram.commitTransaction("change");
+
+   }
+
+   // This is the general menu command handler, parameterized by the name of the command.
+   function cxcommand(event, val) {
+      if (val === undefined)
+         val = event.currentTarget.id;
+      var diagram = myDiagram;
+
+      switch (val) {
+      case "NtoN":
+         var linkType = document.elementFromPoint(event.clientX, event.clientY).name;
+         changeNtoN(diagram, linkType);
+         break;
+      case "linkType": {
+         //var istemp = window.getComputedStyle(document.elementFromPoint(event.clientX, event.clientY).parentElement)["background-color"];
+         var linkType = document.elementFromPoint(event.clientX,event.clientY).name;
+         //var istemp = document.getElementById("test_id").getAttribute('name');
+
+         changeType(diagram, linkType);
+         break;
+      }
+      }
+      diagram.currentTool.stopTool();
+   }
+   function changeNtoN(diagram, nToN) {
+
+      diagram.startTransaction("change");
+      diagram.selection.each(function(link) {
+         if (link instanceof go.Link) { // ignore any selected Links and simple Parts
+
+            var data = link.data;
+
+            switch (nToN) {
+            case "one":
+               diagram.model.setDataProperty(data, "multi", "1");
+               break;
+            case "many":
+               diagram.model.setDataProperty(data, "multi", "M");
+               break;
+            }
+            console.log("multi: " + data.multi);
+         }
+      });
+      diagram.commitTransaction("change");
+   }
+   function changeType(diagram, attriType) {
+      // Always make changes in a transaction, except when initializing the diagram.
+      diagram.startTransaction("change");
+      diagram.selection.each(function(link) {
+         if (link instanceof go.Link) { // ignore any selected Links and simple Parts
+            // Examine and modify the data, not the Node directly.
+            var data = link.data;
+
+            //saveDiagramProperties();  
+            //var jsontext = myDiagram.model.toJson();
+            //window.alert(jsontext);
+
+            // Call setDataProperty to support undo/redo as well as
+            // automatically evaluating any relevant bindings.
+            var tmp = diagram.model.findNodeDataForKey(data.to);
+            var tmp2 = diagram.model.findNodeDataForKey(data.from);
+            switch (attriType) {
+            case "key":
+               diagram.model.setDataProperty(data, "toArrow", "Standard");
+               diagram.model.setDataProperty(data, "fromArrow", "Backward");               
+               //diagram.model.setDataProperty(link.data, "type", "a");   //attribute랑 연결된 경우
+               diagram.model.setDataProperty(data, "attriType", "k");
+               diagram.model.setDataProperty(data, "nToN", "0");
+               //diagram.model.setDataProperty(link.data, "multi", null);
+               break;
+            case "normal":
+               // 어느 방향이 attribute 방향인지 찾는 함수 만들기!! 중요하다
+               
+               if(tmp.type == "A"){
+                  diagram.model.setDataProperty(data, "toArrow", "Standard");
+                  diagram.model.setDataProperty(data, "fromArrow", "");
+               }
+               if(tmp2.type == "A"){
+                  diagram.model.setDataProperty(data, "toArrow", "");
+                  diagram.model.setDataProperty(data, "fromArrow", "Backward");
+               }         
+               diagram.model.setDataProperty(data, "attriType", "n");
+               diagram.model.setDataProperty(data, "nToN", "0");
+               //diagram.model.setDataProperty(link.data, "multi", null);
+               break;   
+            case "multi":
+               
+               if(tmp.type == "A"){
+                  diagram.model.setDataProperty(data, "toArrow", "DoubleFeathers");
+                  diagram.model.setDataProperty(data, "fromArrow", "");
+               }
+               if(tmp2.type == "A"){
+                  diagram.model.setDataProperty(data, "toArrow", "");
+                  diagram.model.setDataProperty(data, "fromArrow", "BackwardDoubleFeathers");
+               }         
+               diagram.model.setDataProperty(data, "attriType", "m");
+      
+               break;
+            case "1to1":
+               diagram.model.setDataProperty(link.data, "nToN", "0");         
+               diagram.model.setDataProperty(link.data, "text", "1");
+               diagram.model.setDataProperty(link.data, "toText", "1");
+               break;
+            case "1toM":
+               diagram.model.setDataProperty(link.data, "nToN", "1");
+               if(tmp.type == "A"){
+                  diagram.model.setDataProperty(link.data, "text", "M");
+                  diagram.model.setDataProperty(link.data, "toText", "1");
+               }
+               if(tmp2.type == "A"){
+                  diagram.model.setDataProperty(link.data, "text", "1");
+                  diagram.model.setDataProperty(link.data, "toText", "M");
+               }         
+               
+               break;
+            case "Mto1":
+               diagram.model.setDataProperty(link.data, "nToN", "2");
+               if(tmp.type == "A"){
+                  diagram.model.setDataProperty(link.data, "text", "1");
+                  diagram.model.setDataProperty(link.data, "toText", "M");
+               }
+               if(tmp2.type == "A"){
+                  diagram.model.setDataProperty(link.data, "text", "M");
+                  diagram.model.setDataProperty(link.data, "toText", "1");
+               }
+               break;
+            case "MtoM":
+               diagram.model.setDataProperty(link.data, "nToN", "3");
+               diagram.model.setDataProperty(link.data, "text", "M");
+               diagram.model.setDataProperty(link.data, "toText", "M");
+               break;
+         
+
+            }
+
+         }
+      });
+      diagram.commitTransaction("change");
+      //window.alert(jsontext);
+   }
 
 	// Show the diagram's model in JSON format that the user may edit
 	function save() {

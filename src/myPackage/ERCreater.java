@@ -39,7 +39,7 @@ public class ERCreater extends HttpServlet {
 		PrintWriter out = response.getWriter();
 		String ctrl="true";
 		RequestDispatcher dispatcher=null;
-        out.println(request.getParameter("ERJson"));
+        //out.println(request.getParameter("ERJson"));
         String jsonString = request.getParameter("ERJson");
         String target = "main.jsp";
   

@@ -595,7 +595,7 @@ th, td {
 				if (istemp == "true") {
 					if (data.isTemp == "false")
 						diagram.model.setDataProperty(data, "text", data.text
-								+ "_T");
+								+ " \u1D40");
 				} else {
 					if (data.isTemp == "true")
 						diagram.model.setDataProperty(data, "text", sub2);
